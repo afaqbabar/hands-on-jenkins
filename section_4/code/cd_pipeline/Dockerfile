@@ -2,8 +2,23 @@
 FROM alpine:3.7
 
 # Install python 3 and pip
-RUN apk add --update python3
-RUN apk add --update python3-pip
+RUN apk upgrade --no-cache \
+  && apk add --no-cache \
+    musl \
+    build-base \
+    python3 \
+    python3-dev \
+    postgresql-dev \
+    bash \
+    git \
+  && pip3 install --no-cache-dir --upgrade pip \
+  && rm -rf /var/cache/* \
+  && rm -rf /root/.cache/*
+
+RUN cd /usr/bin \
+  # && ln -sf easy_install-3.5 easy_install \
+  && ln -sf python3 python \
+  && ln -sf pip3 pip
 
 # Install Python modules needed by the Python app
 COPY requirements.txt /usr/src/app/
